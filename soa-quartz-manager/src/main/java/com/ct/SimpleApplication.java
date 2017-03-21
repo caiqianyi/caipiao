@@ -26,7 +26,7 @@ public class SimpleApplication extends SpringBootServletInitializer{
 	 
 	 @Override
    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-	 	 System.out.println("��war��ʽ����...");
+	   System.out.println("以war包方式启动...");
        // TODO Auto-generated method stub
        return builder.sources(SimpleApplication.class);
    }
