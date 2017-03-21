@@ -2,8 +2,7 @@ package com.ct.soa.quartz.core;
 
 public enum JobGroup {
 	
-	SYSTEM("xlhy.system"),SMS("xlhy.sms"),PAY("xlhy.pay"),SHOWDATA("xlhy.showdata"),
-	MARKET("xlhy.market"),SECURITY("xlhy.security"),OPERATE("xlhy.operate");
+	SYSTEM("ct.system"),DATA_SYNC("ct.data.sync");
 	
 	private String name;
 	

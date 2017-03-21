@@ -39,7 +39,7 @@ public class MinuteJob extends AbstractQuartzJob{
 
 	@Override
 	public boolean handle(JobExecutionContext arg0) {
-		taskService.addSystemJob("com.xlhy.soa.quartz.job.MinuteJob", 60 , "MinuteJob");
+		taskService.addSystemJob("com.ct.soa.quartz.job.MinuteJob", 60 , "MinuteJob");
 		logger.info("JobName: {}", arg0.getJobDetail().getKey().getName() + " "+DateFormatUtils.format(new Date(), "HH:mm:ss"));
 		return false;
 	}
