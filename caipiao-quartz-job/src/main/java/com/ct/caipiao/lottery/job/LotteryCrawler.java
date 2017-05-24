@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Component;
 
 import cn.edu.hfut.dmic.webcollector.model.Page;
 
@@ -21,7 +22,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-public abstract class LotteryCrawler extends AbstractQuartzJob{
+@Component
+public class LotteryCrawler extends AbstractQuartzJob{
 	
 	Logger logger = LoggerFactory.getLogger(LotteryCrawler.class);
 	
@@ -29,13 +31,6 @@ public abstract class LotteryCrawler extends AbstractQuartzJob{
     private LotteryNumsDao lotteryNumsDao;
 	
 	private String cat;
-
-	public LotteryCrawler() {
-		super();
-		this.cat = this.getLotteryCat();
-		this.addSeed("http://f.apiplus.cn/"+cat+".json");
-		this.addRegex("http://f.apiplus.cn/.*");
-	}
 	
 	@Override
 	public void visit(Page page) {
@@ -62,6 +57,9 @@ public abstract class LotteryCrawler extends AbstractQuartzJob{
 	
 	@Override
 	public boolean handle(JobExecutionContext arg0) {
+		this.cat = (String) arg0.getJobDetail().getJobDataMap().get("dataJson");
+		this.addSeed("http://f.apiplus.cn/"+cat+".json");
+		this.addRegex("http://f.apiplus.cn/.*");
 		try {
 			this.start(1);
 		} catch (Exception e) {
@@ -69,6 +67,4 @@ public abstract class LotteryCrawler extends AbstractQuartzJob{
 		}
 		return false;
 	}
-	
-	public abstract String getLotteryCat();
 }
