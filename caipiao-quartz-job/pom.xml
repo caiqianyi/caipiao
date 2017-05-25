@@ -11,7 +11,7 @@
 
   <artifactId>caipiao-quartz-job</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
 
   <name>caipiao-quartz-job</name>
 
@@ -34,6 +34,11 @@
     	<groupId>com.ct</groupId>
     	<artifactId>caipiao-core-service</artifactId>
     	<version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+    	<groupId>jstl</groupId>
+    	<artifactId>jstl</artifactId>
+    	<version>1.2</version>
     </dependency>
   </dependencies>
 </project>
