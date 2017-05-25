@@ -5,15 +5,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
+import org.quartz.JobPersistenceException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -45,17 +47,28 @@ public class TaskServiceImpl implements ITaskService{
 	public List<TaskInfo> list(String groupJob) throws SchedulerException{
 		List<TaskInfo> list = new ArrayList<TaskInfo>();
 		List<String> gjs = new ArrayList<String>();
-		if(StringUtils.isEmpty(groupJob))
+		if(StringUtils.isEmpty(groupJob)){
 			gjs.addAll(scheduler.getJobGroupNames());
-		else
-			gjs.add(groupJob);
+		}else{
+			JobGroup jg = JobGroup.valueByName(groupJob);
+			if(jg == null){
+				return null;
+			}
+			gjs.add(jg.getName());
+		}
 		
 		for(String gj : gjs){
 			for(JobKey jobKey: scheduler.getJobKeys(GroupMatcher.<JobKey>groupEquals(gj))){
 				List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
 				for (Trigger trigger: triggers) {
 					Trigger.TriggerState triggerState = scheduler.getTriggerState(trigger.getKey());
-					JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+					JobDetail jobDetail = null;
+					try{
+						jobDetail = scheduler.getJobDetail(jobKey);
+					}catch(JobPersistenceException e){
+						e.printStackTrace();
+						continue;
+					}
 					
 					String cronExpression = "", createTime = "";
 					
@@ -66,11 +79,13 @@ public class TaskServiceImpl implements ITaskService{
 					}
 					TaskInfo info = new TaskInfo();
 					info.setJobName(jobKey.getName());
-					info.setJobGroup(JobGroup.valueByName(jobKey.getGroup()));
+					info.setJobGroup(jobKey.getGroup());
+					info.setGroupSimple(JobGroup.valueByName(jobKey.getGroup()));
 					info.setJobDescription(jobDetail.getDescription());
 					info.setJobStatus(triggerState.name());
 					info.setCronExpression(cronExpression);
 					info.setCreateTime(createTime);
+					info.setDataJson(jobDetail.getJobDataMap().getString("dataJson"));
 					list.add(info);
 				}					
 			}
@@ -85,10 +100,11 @@ public class TaskServiceImpl implements ITaskService{
 	 */
 	public void addJob(TaskInfo info) {
 		String jobName = info.getJobName(), 
-			   jobGroup = info.getJobGroup().getName(), 
+			   jobGroup = info.getJobGroup(), 
 			   cronExpression = info.getCronExpression(),
-			   jobDescription = info.getJobDescription();
-		add(jobName, jobGroup, cronExpression, jobDescription);
+			   jobDescription = info.getJobDescription(),
+			   dataJson = info.getDataJson();
+		add(jobName, jobGroup, cronExpression, jobDescription,dataJson);
 	}
 	
 	/**
@@ -98,10 +114,11 @@ public class TaskServiceImpl implements ITaskService{
 	 */
 	public void edit(TaskInfo info) {
 		String jobName = info.getJobName(), 
-			   jobGroup = info.getJobGroup().getName(), 
+			   jobGroup = info.getJobGroup(), 
 			   cronExpression = info.getCronExpression(),
 			   jobDescription = info.getJobDescription(),
-			   createTime = DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+			   createTime = DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+					   dataJson = info.getDataJson();
 		try {
 			if (!checkExists(jobName, jobGroup)) {
 				throw new I18nMessageException(MsgModule.GLOBAL,500,String.format("Job不存在, jobName:{%s},jobGroup:{%s}", jobName, jobGroup));
@@ -112,6 +129,9 @@ public class TaskServiceImpl implements ITaskService{
 	        CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(triggerKey).withDescription(createTime).withSchedule(cronScheduleBuilder).build();
 	        
 	        JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+	        if(StringUtils.isNotBlank(dataJson)){
+	        	jobDetail.getJobDataMap().put("dataJson", dataJson);
+	        }
 	        jobDetail.getJobBuilder().withDescription(jobDescription);
 	        HashSet<Trigger> triggerSet = new HashSet<Trigger>();
 	    	triggerSet.add(cronTrigger);
@@ -129,11 +149,16 @@ public class TaskServiceImpl implements ITaskService{
 	 * 2016年10月9日下午1:51:12
 	 */
 	public void delete(String jobName, String jobGroup){
-		if(StringUtils.isNoneBlank(jobGroup)){
-			jobGroup = JobGroup.valueOf(jobGroup).getName();
-		}
+		/*if(StringUtils.isNotBlank(jobGroup)){
+			JobGroup jg = JobGroup.valueByName(jobGroup);
+			if(jg != null){
+				jobGroup = jg.getName();
+			}
+		}*/
 		TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroup);
         try {
+        	logger.info("===> delete, jobName:{}", jobName);
+        	logger.info("===> delete, jobGroup:{}", jobGroup);
 			if (checkExists(jobName, jobGroup)) {
 				scheduler.pauseTrigger(triggerKey);
 			    scheduler.unscheduleJob(triggerKey);
@@ -194,23 +219,31 @@ public class TaskServiceImpl implements ITaskService{
 	}
 
 	@Override
-	public void addJob(String jobName, JobGroup jobGroup, Integer sec, String info) {
+	public void addJob(String jobName, JobGroup jobGroup, Integer sec, String info,String json) {
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.SECOND, c.get(Calendar.SECOND) + 60);
 		String exp = c.get(Calendar.SECOND)+" "+c.get(Calendar.MINUTE)+" "+c.get(Calendar.HOUR_OF_DAY)+" "+c.get(Calendar.DAY_OF_MONTH) +" "+ (c.get(Calendar.MONTH)+1) +" ? "+c.get(Calendar.YEAR);
-		add(jobName,jobGroup.getName() , exp, info);
+		add(jobName,jobGroup.getName() , exp, info,json);
 	}
 
 	@Override
-	public void addSystemJob(String jobName, Integer sec, String info) {
+	public void addSystemJob(String jobName, Integer sec, String info,String json) {
 		Calendar c = Calendar.getInstance();
-		c.set(Calendar.SECOND, c.get(Calendar.SECOND) + 60);
+		c.set(Calendar.SECOND, c.get(Calendar.SECOND) + sec);
 		String exp = c.get(Calendar.SECOND)+" "+c.get(Calendar.MINUTE)+" "+c.get(Calendar.HOUR_OF_DAY)+" "+c.get(Calendar.DAY_OF_MONTH) +" "+ (c.get(Calendar.MONTH)+1) +" ? "+c.get(Calendar.YEAR);
-		add(jobName, JobGroup.SYSTEM.getName(), exp, info);
+		add(jobName, JobGroup.SYSTEM.getName(), exp, info, json);
+	}
+	
+	@Override
+	public void addSystemJob(String jobName,String jobGroup, Integer sec, String info,String json) {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.SECOND, c.get(Calendar.SECOND) + sec);
+		String exp = c.get(Calendar.SECOND)+" "+c.get(Calendar.MINUTE)+" "+c.get(Calendar.HOUR_OF_DAY)+" "+c.get(Calendar.DAY_OF_MONTH) +" "+ (c.get(Calendar.MONTH)+1) +" ? "+c.get(Calendar.YEAR);
+		add(jobName, JobGroup.SYSTEM.getName()+"."+jobGroup, exp, info, json);
 	}
 	
 	private void add(String jobName,String jobGroup,
-			String cronExpression,String jobDescription){
+			String cronExpression,String jobDescription,String json){
 		String createTime = DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss");
 		try {
 			if (checkExists(jobName, jobGroup)) {
@@ -227,6 +260,7 @@ public class TaskServiceImpl implements ITaskService{
 		
 			Class<? extends Job> clazz = (Class<? extends Job>)Class.forName(jobName);
 			JobDetail jobDetail = JobBuilder.newJob(clazz).withIdentity(jobKey).withDescription(jobDescription).build();
+			jobDetail.getJobDataMap().put("dataJson", json);
 			scheduler.scheduleJob(jobDetail, trigger);
 		} catch (ClassNotFoundException e) {
 			throw new I18nMessageException(e);
@@ -234,5 +268,12 @@ public class TaskServiceImpl implements ITaskService{
 			e.printStackTrace();
 			throw new I18nMessageException(e);
 		}
+	}
+	public static void main(String[] args) {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.SECOND, c.get(Calendar.SECOND) + 60);
+		String exp = c.get(Calendar.SECOND)+" "+c.get(Calendar.MINUTE)+" "+c.get(Calendar.HOUR_OF_DAY)+" "+c.get(Calendar.DAY_OF_MONTH) +" "+ (c.get(Calendar.MONTH)+1) +" ? "+c.get(Calendar.YEAR);
+		System.out.println(exp);
+		System.out.println(UUID.randomUUID().toString());
 	}
 }

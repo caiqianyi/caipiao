@@ -16,7 +16,9 @@ public class TaskInfo implements Serializable{
 	private String jobName;
 	
 	/**任务分组*/
-	private JobGroup jobGroup;
+	private JobGroup groupSimple;
+	
+	private String jobGroup;
 	
 	/**任务描述*/
 	private String jobDescription;
@@ -26,6 +28,8 @@ public class TaskInfo implements Serializable{
 	
 	/**任务表达式*/
 	private String cronExpression;
+	
+	private String dataJson;
 	
 	private String createTime;
 
@@ -37,11 +41,11 @@ public class TaskInfo implements Serializable{
 		this.jobName = jobName;
 	}
 
-	public JobGroup getJobGroup() {
+	public String getJobGroup() {
 		return jobGroup;
 	}
 
-	public void setJobGroup(JobGroup jobGroup) {
+	public void setJobGroup(String jobGroup) {
 		this.jobGroup = jobGroup;
 	}
 
@@ -84,4 +88,21 @@ public class TaskInfo implements Serializable{
 	public void setId(int id) {
 		this.id = id;
 	}
+
+	public String getDataJson() {
+		return dataJson;
+	}
+
+	public void setDataJson(String dataJson) {
+		this.dataJson = dataJson;
+	}
+
+	public JobGroup getGroupSimple() {
+		return groupSimple;
+	}
+
+	public void setGroupSimple(JobGroup groupSimple) {
+		this.groupSimple = groupSimple;
+	}
+
 }

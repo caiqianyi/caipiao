@@ -5,8 +5,6 @@ import java.util.Properties;
 
 import javax.annotation.Resource;
 
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +25,7 @@ import com.alibaba.druid.filter.config.ConfigTools;
 public class QuartzConfig {
 	
 	private Logger logger = LoggerFactory.getLogger(QuartzConfig.class);
-
+	
 	@Resource
 	private Environment env;
 	
@@ -95,6 +93,11 @@ public class QuartzConfig {
 			String password = ConfigTools.decrypt(propertyResolver.getProperty("password"));
 			prop.put("org.quartz.dataSource.quartzDataSource.driver", propertyResolver.getProperty("driver-class-name"));
 			prop.put("org.quartz.dataSource.quartzDataSource.URL", propertyResolver.getProperty("url"));
+			
+			
+			logger.debug("quartz.dataSource ==>> url : {}",propertyResolver.getProperty("url"));
+			logger.debug("quartz.dataSource ==>> username : {}",username);
+			logger.debug("quartz.dataSource ==>> password : {}",password);
 			prop.put("org.quartz.dataSource.quartzDataSource.user", username);
 			prop.put("org.quartz.dataSource.quartzDataSource.password",  password);
 			prop.put("org.quartz.dataSource.quartzDataSource.maxConnections", "10");
@@ -104,10 +107,5 @@ public class QuartzConfig {
 		}
         
 		return prop;
-	}
-	
-	public static void main(String[] args) throws Exception {
-		System.out.println(ConfigTools.encrypt("root"));;
-		System.out.println(ConfigTools.encrypt("123456"));
 	}
 }

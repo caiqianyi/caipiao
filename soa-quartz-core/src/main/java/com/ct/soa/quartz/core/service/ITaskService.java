@@ -24,7 +24,7 @@ public interface ITaskService {
 	 * @param sec      
 	 * @param info
 	 */
-	public void addJob(String jobName,JobGroup jobGroup,Integer sec,String info);
+	public void addJob(String jobName,JobGroup jobGroup,Integer sec,String info,String json);
 	
 	
 	/**
@@ -34,7 +34,9 @@ public interface ITaskService {
 	 * @param sec      
 	 * @param info
 	 */
-	public void addSystemJob(String jobName,Integer sec,String info);
+	public void addSystemJob(String jobName,Integer sec,String info,String json);
+	
+	public void addSystemJob(String jobName,String jobGroup,Integer sec,String info,String json);
 	
 	/**
 	 * 保存定时任务
