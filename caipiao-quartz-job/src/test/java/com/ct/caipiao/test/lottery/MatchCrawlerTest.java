@@ -5,7 +5,10 @@ import javax.annotation.Resource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ct.App;
@@ -16,6 +19,8 @@ import com.ct.caipiao.lottery.job.JczqOddsCrawler;
 @RunWith(SpringJUnit4ClassRunner.class)  
 @SpringBootTest(classes = App.class)
 public class MatchCrawlerTest {
+	
+	private Logger logger = LoggerFactory.getLogger(MatchCrawlerTest.class);
 	@Resource
 	private JclqMatchCrawler jclqMatchCrawler;
 	
@@ -24,6 +29,9 @@ public class MatchCrawlerTest {
 	
 	@Resource
 	private JczqOddsCrawler jczqOddsCrawler;
+	
+	@Resource
+	private MongoTemplate mongoTemplate;
 	
 	@Test
 	public void testJclqMatchCrawlerForMnl() throws JobExecutionException{
@@ -71,5 +79,13 @@ public class MatchCrawlerTest {
 	public void testJczqOddsCrawlerForHafu() throws JobExecutionException{
 		jczqOddsCrawler.setPoolcode("hafu");
 		jczqOddsCrawler.execute(null);
+	}
+	
+	@Test
+	public void testDropMongodbCollectionName() throws JobExecutionException{
+		for(String collectionName : mongoTemplate.getCollectionNames()){
+			mongoTemplate.dropCollection(collectionName);
+			logger.debug("=============>>collectionName:{}",collectionName);
+		}
 	}
 }
