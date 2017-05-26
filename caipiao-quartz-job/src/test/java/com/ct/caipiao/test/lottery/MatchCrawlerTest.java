@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ct.App;
+import com.ct.caipiao.lol.job.LplMatchCrawler;
 import com.ct.caipiao.lottery.job.JclqMatchCrawler;
 import com.ct.caipiao.lottery.job.JczqMatchCrawler;
 import com.ct.caipiao.lottery.job.JczqOddsCrawler;
@@ -33,7 +34,10 @@ public class MatchCrawlerTest {
 	@Resource
 	private MongoTemplate mongoTemplate;
 	
-	@Test
+	@Resource
+	private LplMatchCrawler lplMatchCrawler;
+	
+	/*@Test
 	public void testJclqMatchCrawlerForMnl() throws JobExecutionException{
 		jclqMatchCrawler.setPoolcode("mnl");
 		jclqMatchCrawler.execute(null);
@@ -79,13 +83,25 @@ public class MatchCrawlerTest {
 	public void testJczqOddsCrawlerForHafu() throws JobExecutionException{
 		jczqOddsCrawler.setPoolcode("hafu");
 		jczqOddsCrawler.execute(null);
-	}
+	}*/
 	
-	@Test
+	/*@Test
 	public void testDropMongodbCollectionName() throws JobExecutionException{
 		for(String collectionName : mongoTemplate.getCollectionNames()){
 			mongoTemplate.dropCollection(collectionName);
 			logger.debug("=============>>collectionName:{}",collectionName);
+		}
+		
+		mongoTemplate.dropCollection("lottery_nums");
+	}*/
+	
+	@Test
+	public void testLplMatchCrawler() throws JobExecutionException{
+		try {
+			lplMatchCrawler.execute(null);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.gson.reflect.TypeToken;
-
 @Controller
 @RequestMapping("/matchs")
 public class MatchController {
@@ -23,7 +21,7 @@ public class MatchController {
 	
 	@ResponseBody
 	@RequestMapping(value="/jczq/{poolcode}", method=RequestMethod.GET)
-	public List<Map> jczq(@PathVariable String poolcode){
+	public List<?> jczq(@PathVariable String poolcode){
 		String collectionName = "jczq_"+poolcode+"_odds";
 		return mongoTemplate.findAll(Map.class,collectionName);
 	}
@@ -32,6 +30,12 @@ public class MatchController {
 	@RequestMapping(value="/jclq/{poolcode}", method=RequestMethod.GET)
 	public List<?> jclq(@PathVariable String poolcode){
 		String collectionName = "jclq_"+poolcode+"_matchs";
+		return mongoTemplate.findAll(Map.class,collectionName);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/{collectionName}", method=RequestMethod.GET)
+	public List<?> collectionName(@PathVariable String collectionName){
 		return mongoTemplate.findAll(Map.class,collectionName);
 	}
 	

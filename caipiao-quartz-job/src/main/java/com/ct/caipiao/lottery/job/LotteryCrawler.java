@@ -1,5 +1,7 @@
 package com.ct.caipiao.lottery.job;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,7 @@ import javax.annotation.Resource;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -22,6 +25,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 @Component
+@Scope("prototype")
 public class LotteryCrawler extends AbstractQuartzJob{
 	
 	Logger logger = LoggerFactory.getLogger(LotteryCrawler.class);
@@ -33,6 +37,7 @@ public class LotteryCrawler extends AbstractQuartzJob{
 	
 	@Override
 	public void visit(Page page) {
+		String cat = this.getCat();
 		String collectionName = "lottery_nums";
 		String body = new String(page.getContent());
 		Gson gson = new GsonBuilder().enableComplexMapKeySerialization()  
@@ -54,18 +59,26 @@ public class LotteryCrawler extends AbstractQuartzJob{
 	@Override
 	public boolean handle(JobExecutionContext arg0,Map<String, Object> dataJson) {
 		if(dataJson != null){
-			this.cat = (String) dataJson.get("cat");
+			this.setCat((String) dataJson.get("cat"));
 		}
-		if(this.cat == null){
-			this.cat = "jx11x5";
+		String cat = this.getCat();
+		if(cat == null){
+			cat = "jx11x5";
 		}
-		this.addSeed("http://f.apiplus.cn/"+cat+".json");
+		logger.debug("2=============>>cat :{}",cat);
+		ArrayList<String> list = new ArrayList<String>();
+		list.addAll(Arrays.asList(new String[]{"http://f.apiplus.cn/"+cat+".json"}));
+		this.setSeeds(list);
 		this.addRegex("http://f.apiplus.cn/.*");
-		try {
-			this.start(this.getDepth());
-		} catch (Exception e) {
-			logger.error("",e);
-		}
 		return false;
 	}
+
+	public String getCat() {
+		return cat;
+	}
+
+	public void setCat(String cat) {
+		this.cat = cat;
+	}
+	
 }

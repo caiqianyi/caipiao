@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -22,6 +23,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
 @Component
+@Scope("prototype")
 public class JczqMatchCrawler extends AbstractQuartzJob{
 
 	Logger logger = LoggerFactory.getLogger(LotteryCrawler.class);
@@ -32,8 +34,7 @@ public class JczqMatchCrawler extends AbstractQuartzJob{
 	public JczqMatchCrawler() {
 		// TODO Auto-generated constructor stub
 		
-		this.addSeed("http://i.sporttery.cn/odds_calculator/get_proportion?i_format=json&pool[]=had&pool[]=hhad&_="+System.currentTimeMillis());
-		this.addRegex("http://i.sporttery.cn/odds_calculator/.*");
+		
 		/*设置是否断点爬取*/  
 		//this.setResumable(false);
 	}
@@ -54,7 +55,13 @@ public class JczqMatchCrawler extends AbstractQuartzJob{
 			LinkedTreeMap<String,Object> item = (LinkedTreeMap<String, Object>) datas.get(key);
 			String matchId = key.replace("_", "");
 			logger.debug("=============>>jclq matchId :{}",matchId);
-			boolean hasId = mongoTemplate.exists(new Query().addCriteria(Criteria.where("id").is(matchId)), collectionName);
+			Query query = new Query().addCriteria(Criteria.where("id").is(matchId));
+			boolean hasId = mongoTemplate.exists(query, collectionName);
+			if(hasId){
+				logger.debug("=============>>jczq remove matchId:{}",matchId);
+				mongoTemplate.remove(query, collectionName);
+			}
+			
 			if(!hasId){
 				item.put("id", matchId);
 				logger.debug("=============>>jczq item :{}",gson.toJson(item));
@@ -65,11 +72,8 @@ public class JczqMatchCrawler extends AbstractQuartzJob{
 	
 	@Override
 	public boolean handle(JobExecutionContext arg0,Map<String, Object> dataJson) {
-		try {
-			this.start(this.getDepth());
-		} catch (Exception e) {
-			logger.error("竞彩足球",e);
-		}
+		this.addSeed("http://i.sporttery.cn/odds_calculator/get_proportion?i_format=json&pool[]=had&pool[]=hhad&_="+System.currentTimeMillis());
+		this.addRegex("http://i.sporttery.cn/odds_calculator/.*");
 		return false;
 	}
 }

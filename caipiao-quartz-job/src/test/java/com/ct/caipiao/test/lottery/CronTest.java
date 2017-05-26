@@ -16,7 +16,7 @@ public class CronTest {
 	@Test
 	public void cronTest() {  
         try {  
-            CronExpression exp = new CronExpression("0 0/30 * * * ?");  
+            CronExpression exp = new CronExpression("1 0/30 * * * ?");  
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
             Date d = new Date();  
             int i = 0;  
