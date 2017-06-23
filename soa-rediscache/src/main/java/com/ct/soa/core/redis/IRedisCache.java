@@ -143,6 +143,13 @@ public interface IRedisCache {
 	 * @return
 	 */
 	public Object get(RedisSpace space, String key);
+	
+	/**
+	 * 获取key对应的值
+	 * @param key
+	 * @return
+	 */
+	public Object get(String key);
 
 	/**
 	 * 设置超时时间

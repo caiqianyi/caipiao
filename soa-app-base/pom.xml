@@ -12,7 +12,7 @@
 
   <groupId>com.ct</groupId>
   <artifactId>soa-app-base</artifactId> 
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0-RELEASE</version>
   <packaging>pom</packaging> 
 
   <name>soa-app-base</name>

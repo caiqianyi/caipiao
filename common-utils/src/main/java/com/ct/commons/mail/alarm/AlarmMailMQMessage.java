@@ -2,7 +2,7 @@ package com.ct.commons.mail.alarm;
 
 import java.util.List;
 
-public class AlermMailMQMessage {
+public class AlarmMailMQMessage {
 	
 	private String templte_id;
 	private List<String> datas;

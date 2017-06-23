@@ -1,4 +1,4 @@
-package com.ct.soa.core.exception;
+package com.ct.commons.exception;
 
 import org.springframework.util.Assert;
 
@@ -16,6 +16,11 @@ public class I18nMessageException extends RuntimeException {
 	private String info;
 	private Exception prevException;
 	
+	
+	public I18nMessageException(Integer code) {
+		this(MsgModule.GLOBAL,code);
+	}
+	
 	public I18nMessageException(MsgModule module,Integer code) {
 		Assert.notNull(module);
 		Assert.notNull(code);
@@ -24,10 +29,19 @@ public class I18nMessageException extends RuntimeException {
 		this.module = module;
 	}
 	
+	
+	public I18nMessageException(Integer code,String info) {
+		this(MsgModule.GLOBAL,code,info);
+	}
+	
 	public I18nMessageException(MsgModule module,Integer code,String info) {
 		this(module, code);
 		Assert.notNull(info);
 		this.info = info;
+	}
+	
+	public I18nMessageException(Integer code,String info,Exception prevException) {
+		this(MsgModule.GLOBAL,code,info,prevException);
 	}
 	
 	public I18nMessageException(MsgModule module,Integer code,String info,Exception prevException) {

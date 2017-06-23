@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ct.soa.core.exception.I18nMessageException;
-import com.ct.soa.core.exception.MsgModule;
+import com.ct.commons.exception.I18nMessageException;
+import com.ct.commons.exception.MsgModule;
 import com.ct.soa.quartz.core.JobGroup;
 import com.ct.soa.quartz.core.entity.TaskInfo;
 import com.ct.soa.quartz.core.service.ITaskService;

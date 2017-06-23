@@ -2,7 +2,7 @@ package com.ct.soa.core.redis;
 
 public enum RedisSpace {
 	
-	OPERATE("xlhy.operate"),SMS("xlhy.sms"),SHIRO("xlhy.shiro"),QUEUE("xlhy.queue");
+	SMS("sys.sms"),GUESS("sys.guess");
 	
 	private String value;
 	RedisSpace(String value){

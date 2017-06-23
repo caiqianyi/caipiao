@@ -1,9 +1,8 @@
-package com.ct.soa.core.exception;
+package com.ct.commons.exception;
 
 public enum MsgModule {
 
-	GLOBAL("xlhy.global"),SMS("xlhy.sms"),PAY("xlhy.pay"),
-	SHOWDATA("xlhy.showdata"),MARKET("xlhy.market"),SECURITY("xlhy.security"),OPERATE("xlhy.operate");
+	GLOBAL("sys.global"),SMS("sys.sms"),PAY("sys.pay");
 	
 	private String value;
 	

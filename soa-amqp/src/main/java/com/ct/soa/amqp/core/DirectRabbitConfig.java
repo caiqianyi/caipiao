@@ -9,4 +9,6 @@ public class DirectRabbitConfig {
 
     
     public final static String JOB_QUEUE_A="A";
+    
+    public final static String AlarmMailQueue = "alarm.mail.queue";
 }

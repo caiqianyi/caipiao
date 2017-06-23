@@ -113,7 +113,7 @@ public class CommonUtil {
 
 	private static char randomChar() {
 		Random r = new Random();
-		String s = Constant.SYS_VERIFYCODE_FORM;
+		String s = "0123456789";
 		return s.charAt(r.nextInt(s.length()));
 	}
 	

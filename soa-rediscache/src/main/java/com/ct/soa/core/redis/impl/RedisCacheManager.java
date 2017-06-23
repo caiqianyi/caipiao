@@ -7,8 +7,8 @@ import javax.annotation.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import com.ct.commons.beans.PropertyConfigurer;
-import com.ct.soa.core.exception.I18nMessageException;
-import com.ct.soa.core.exception.MsgModule;
+import com.ct.commons.exception.I18nMessageException;
+import com.ct.commons.exception.MsgModule;
 
 public class RedisCacheManager {
 	

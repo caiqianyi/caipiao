@@ -269,6 +269,29 @@
 	        <artifactId>dom4j</artifactId> 
 	        <version>2.0.0</version>
 	    </dependency>
+	    
+	    
+	    <!-- excel 解析 -->
+		<dependency>
+		  <groupId>org.apache.poi</groupId>
+		  <artifactId>poi</artifactId>
+		  <version>3.7</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.apache.poi</groupId>
+		  <artifactId>poi-ooxml</artifactId>
+		  <version>3.7</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.apache.poi</groupId>
+		  <artifactId>poi-ooxml-schemas</artifactId>
+		  <version>3.7</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.apache.xmlbeans</groupId>
+		  <artifactId>xmlbeans</artifactId>
+		  <version>2.6.0</version>
+		</dependency>
 	  </dependencies>
   </dependencyManagement>
 </project>
