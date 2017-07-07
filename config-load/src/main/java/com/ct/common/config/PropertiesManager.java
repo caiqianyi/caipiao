@@ -76,7 +76,7 @@ public class PropertiesManager {
 		return smartloadProperties(profile);
 	}
 	
-    public String getPropertie(String param,String propFile){
+    public String getProperty(String propFile,String param){
     	Properties prop = loadProperties(propFile);
 		String jsonStr=prop.getProperty(param); 
 		if(StringUtils.isEmpty(jsonStr)){

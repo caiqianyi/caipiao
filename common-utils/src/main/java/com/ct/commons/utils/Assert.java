@@ -18,31 +18,6 @@ public abstract class Assert {
 	private final static String profile = "/verify.properties";
 
 	/**
-	 * Assert a boolean expression, throwing {@code I18nMessageException}
-	 * if the test result is {@code false}.
-	 * <pre class="code">Assert.isTrue(i &gt; 0, "The value must be greater than zero");</pre>
-	 * @param expression a boolean expression
-	 * @param errcode the exception errcode to use if the assertion fails
-	 * @throws I18nMessageException if expression is {@code false}
-	 */
-	public static void isTrue(boolean expression, Integer errcode,String message) {
-		if (!expression) {
-			throw new I18nMessageException(errcode,message);
-		}
-	}
-
-	/**
-	 * Assert a boolean expression, throwing {@code I18nMessageException}
-	 * if the test result is {@code false}.
-	 * <pre class="code">Assert.isTrue(i &gt; 0);</pre>
-	 * @param expression a boolean expression
-	 * @throws I18nMessageException if expression is {@code false}
-	 */
-	public static void isTrue(boolean expression) {
-		isTrue(expression, 500 , "[Assertion failed] - this expression must be true");
-	}
-
-	/**
 	 * Assert that an object is {@code null} .
 	 * <pre class="code">Assert.isNull(value, "The value must be null");</pre>
 	 * @param object the object to check
@@ -86,82 +61,6 @@ public abstract class Assert {
 	 */
 	public static void notNull(Object object) {
 		notNull(object, 500 , "[Assertion failed] - this argument is required; it must not be null");
-	}
-
-	/**
-	 * Assert that the given String is not empty; that is,
-	 * it must not be {@code null} and not the empty String.
-	 * <pre class="code">Assert.hasLength(name, "Name must not be empty");</pre>
-	 * @param text the String to check
-	 * @param errcode the exception errcode to use if the assertion fails
-	 * @see StringUtils#hasLength
-	 */
-	public static void hasLength(String text, Integer errcode, String message) {
-		if (!StringUtils.hasLength(text)) {
-			throw new I18nMessageException(errcode,message);
-		}
-	}
-
-	/**
-	 * Assert that the given String is not empty; that is,
-	 * it must not be {@code null} and not the empty String.
-	 * <pre class="code">Assert.hasLength(name);</pre>
-	 * @param text the String to check
-	 * @see StringUtils#hasLength
-	 */
-	public static void hasLength(String text) {
-		hasLength(text, 500 , "[Assertion failed] - this String argument must have length; it must not be null or empty");
-	}
-
-	/**
-	 * Assert that the given String has valid text content; that is, it must not
-	 * be {@code null} and must contain at least one non-whitespace character.
-	 * <pre class="code">Assert.hasText(name, "'name' must not be empty");</pre>
-	 * @param text the String to check
-	 * @param errcode the exception errcode to use if the assertion fails
-	 * @see StringUtils#hasText
-	 */
-	public static void hasText(String text, Integer errcode, String message) {
-		if (!StringUtils.hasText(text)) {
-			throw new I18nMessageException(errcode);
-		}
-	}
-
-	/**
-	 * Assert that the given String has valid text content; that is, it must not
-	 * be {@code null} and must contain at least one non-whitespace character.
-	 * <pre class="code">Assert.hasText(name, "'name' must not be empty");</pre>
-	 * @param text the String to check
-	 * @see StringUtils#hasText
-	 */
-	public static void hasText(String text) {
-		hasText(text,500,
-				"[Assertion failed] - this String argument must have text; it must not be null, empty, or blank");
-	}
-
-	/**
-	 * Assert that the given text does not contain the given substring.
-	 * <pre class="code">Assert.doesNotContain(name, "rod", "Name must not contain 'rod'");</pre>
-	 * @param textToSearch the text to search
-	 * @param substring the substring to find within the text
-	 * @param errcode the exception errcode to use if the assertion fails
-	 */
-	public static void doesNotContain(String textToSearch, String substring, Integer errcode, String message) {
-		if (StringUtils.hasLength(textToSearch) && StringUtils.hasLength(substring) &&
-				textToSearch.contains(substring)) {
-			throw new I18nMessageException(errcode,message);
-		}
-	}
-
-	/**
-	 * Assert that the given text does not contain the given substring.
-	 * <pre class="code">Assert.doesNotContain(name, "rod");</pre>
-	 * @param textToSearch the text to search
-	 * @param substring the substring to find within the text
-	 */
-	public static void doesNotContain(String textToSearch, String substring) {
-		doesNotContain(textToSearch, substring,500,
-				"[Assertion failed] - this String argument must not contain the substring [" + substring + "]");
 	}
 
 	/**
@@ -250,6 +149,20 @@ public abstract class Assert {
 	public static void state(boolean expression, Integer errcode) {
 		if (!expression) {
 			throw new I18nMessageException(errcode);
+		}
+	}
+	
+	
+	public static void isNumber(String val, Integer errcode,String message) {
+		if (!org.apache.commons.lang.StringUtils.isNumeric(val)) {
+			throw new I18nMessageException(errcode,message);
+		}
+	}
+	
+	public static void hasLength(String str,int length, Integer errcode,String message) {
+		notEmpty(str, errcode, message);
+		if (str.length() != length) {
+			throw new I18nMessageException(errcode,message);
 		}
 	}
 	

@@ -32,5 +32,10 @@
     	<artifactId>soa-mongo-core</artifactId>
     	<version>0.0.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+    	<groupId>com.ct</groupId>
+    	<artifactId>common-utils</artifactId>
+    	<version>1.0.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>

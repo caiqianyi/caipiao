@@ -3,6 +3,8 @@ package com.ct.commons.utils;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 
 public class GenerateCode {
@@ -49,11 +51,26 @@ public class GenerateCode {
 		return value;
     }
     
+    //生成购买道具订单号，生成规则示例：20160622+类型(5位)+玩家id(9位，不够前面补0)++8位随机数
+    public static synchronized String genToolOrderNo(){
+    	String today = new SimpleDateFormat("yyyyMMdd")
+				.format(new java.util.Date());
+    	return "TONPAY_"+today+getUUID().substring(0, 17);
+    }    
     
-    
+    public static String getUUID(){
+    	return UUID.randomUUID().toString().replace("-","");
+    }
+    /**
+     * 生成随机数
+     * @return
+     */
+    public static int getRandom(int max){
+    	Random random = new Random();
+    	return random.nextInt(max);
+    }
     public static void main(String[] a){
-    	
-    	
+    	System.out.println(genToolOrderNo());
     }
 
 }

@@ -35,8 +35,13 @@ public class I18nMessageException extends RuntimeException {
 	}
 	
 	public I18nMessageException(MsgModule module,Integer code,String info) {
-		this(module, code);
+		super(info);
+		Assert.notNull(module);
+		Assert.notNull(code);
 		Assert.notNull(info);
+		
+		this.code = code;
+		this.module = module;
 		this.info = info;
 	}
 	
