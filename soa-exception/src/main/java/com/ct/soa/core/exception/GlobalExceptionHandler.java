@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     	else
     		i18ne = ((I18nMessageException)e);
 		String key = i18ne.getModule().getValue() + "."+i18ne.getCode();
-		String msg = propertiesManager.getPropertie("/i18n_messages.properties",key);
+		String msg = propertiesManager.getProperty("/i18n_messages.properties",key);
 		message.setErrcode(i18ne.getCode());
     	message.setErrmsg(msg);
     	String info = i18ne.getInfo() == null ? "" : i18ne.getInfo();

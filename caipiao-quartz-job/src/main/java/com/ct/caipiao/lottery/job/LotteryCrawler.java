@@ -24,8 +24,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-@Component
-@Scope("prototype")
 public class LotteryCrawler extends AbstractQuartzJob{
 	
 	Logger logger = LoggerFactory.getLogger(LotteryCrawler.class);

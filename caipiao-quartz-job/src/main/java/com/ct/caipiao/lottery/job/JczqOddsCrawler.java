@@ -24,8 +24,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
-@Component
-@Scope("prototype")
 public class JczqOddsCrawler extends AbstractQuartzJob{
 
 	Logger logger = LoggerFactory.getLogger(LotteryCrawler.class);
