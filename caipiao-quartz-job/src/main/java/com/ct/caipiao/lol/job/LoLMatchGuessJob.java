@@ -183,7 +183,7 @@ public class LoLMatchGuessJob extends AbstractLoLMatchJob{
 					sfGuess.put("match_id", match.get("match_id"));
 					sfGuess.put("bet_state", sfGuessJ.getLong("betState").toString());
 					sfGuess.put("guess_end_time", (sfGuessJ.getLong("endTime")*1000)+"");
-					sfGuess.put("guess_type", sfGuessJ.getLong("endTime").toString());
+					sfGuess.put("guess_type", sfGuessJ.getLong("guessType").toString());
 					sfGuess.put("guess_status", sfGuessJ.getLong("guessStatus").toString());
 					sfGuess.put("is_end", sfGuessJ.getBoolean("isEnd").toString());
 					Map<String,List<Double>> odds = (Map<String, List<Double>>) sfGuess.get("odds");
@@ -320,7 +320,7 @@ public class LoLMatchGuessJob extends AbstractLoLMatchJob{
 					bfGuess.put("match_id", match.get("match_id"));
 					bfGuess.put("bet_state", bfGuessJ.getLong("betState").toString());
 					bfGuess.put("guess_end_time", bfGuessJ.getLong("endTime").toString());
-					bfGuess.put("guess_type", bfGuessJ.getLong("endTime").toString());
+					bfGuess.put("guess_type", bfGuessJ.getLong("guessType").toString());
 					bfGuess.put("guess_status", bfGuessJ.getLong("guessStatus").toString());
 					bfGuess.put("is_end", bfGuessJ.getBoolean("isEnd").toString());
 					bfGuess.put("odds", odds);
@@ -333,6 +333,8 @@ public class LoLMatchGuessJob extends AbstractLoLMatchJob{
 					mongoTemplate.findAndModify(bf_query, Update.update("bet_state", "3"), Map.class,lpl_match_guess_list);
 				}
 			}
+			Query all_query = new Query().addCriteria(Criteria.where("bet_state").is("2").and("guess_end_time").gte(new Date().getTime()));
+			mongoTemplate.findAndModify(all_query, Update.update("bet_state", "3"), Map.class,lpl_match_guess_list);//更新结束的竞猜状态
 		}catch(Exception e){
 			logger.error("body={}",body,e);
 		}
