@@ -29,15 +29,6 @@ public class QuartzConfig {
 	@Resource
 	private Environment env;
 	
-	@Value("${spring.datasource.username}")
-	private String username;
-	@Value("${spring.datasource.password}")
-	private String password;
-	@Value("${spring.datasource.driver-class-name}")
-	private String driverClassName;
-	@Value("${spring.datasource.url}")
-	private String url;
-	
 	@Resource
 	private JobFactory jobFactory;
 	
@@ -93,17 +84,17 @@ public class QuartzConfig {
 		prop.put("org.quartz.jobStore.isClustered", "true");
 		prop.put("org.quartz.threadPool.class", "org.quartz.simpl.SimpleThreadPool");
         prop.put("org.quartz.threadPool.threadCount", "5");
-
         
+        RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(env, "spring.datasource.");
         
 		try {
-			String username = ConfigTools.decrypt(this.username);
-			String password = ConfigTools.decrypt(this.password);
-			prop.put("org.quartz.dataSource.quartzDataSource.driver", driverClassName);
-			prop.put("org.quartz.dataSource.quartzDataSource.URL", url);
+			String username = ConfigTools.decrypt(propertyResolver.getProperty("username"));
+			String password = ConfigTools.decrypt(propertyResolver.getProperty("password"));
+			prop.put("org.quartz.dataSource.quartzDataSource.driver", propertyResolver.getProperty("driver-class-name"));
+			prop.put("org.quartz.dataSource.quartzDataSource.URL", propertyResolver.getProperty("url"));
 			
 			
-			logger.debug("quartz.dataSource ==>> url : {}",url);
+			logger.debug("quartz.dataSource ==>> url : {}",propertyResolver.getProperty("url"));
 			logger.debug("quartz.dataSource ==>> username : {}",username);
 			logger.debug("quartz.dataSource ==>> password : {}",password);
 			prop.put("org.quartz.dataSource.quartzDataSource.user", username);
