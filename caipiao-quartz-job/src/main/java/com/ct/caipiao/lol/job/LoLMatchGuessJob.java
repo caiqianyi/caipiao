@@ -333,7 +333,7 @@ public class LoLMatchGuessJob extends AbstractLoLMatchJob{
 					mongoTemplate.findAndModify(bf_query, Update.update("bet_state", "3"), Map.class,lpl_match_guess_list);
 				}
 			}
-			Query all_query = new Query().addCriteria(Criteria.where("bet_state").is("2").and("guess_end_time").gte(new Date().getTime()));
+			Query all_query = new Query().addCriteria(Criteria.where("bet_state").is("2").and("guess_end_time").gte(new Date().getTime()+2*60*60*1000));
 			mongoTemplate.findAndModify(all_query, Update.update("bet_state", "3"), Map.class,lpl_match_guess_list);//更新结束的竞猜状态
 		}catch(Exception e){
 			logger.error("body={}",body,e);
