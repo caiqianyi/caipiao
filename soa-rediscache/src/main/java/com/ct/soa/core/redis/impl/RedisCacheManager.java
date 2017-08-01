@@ -18,8 +18,8 @@ public class RedisCacheManager {
 
 	
 	String checkKey(String k){
-		String value = propertiesManager.getProperty("/redis-keys.properties", k);
-		if (value != null) {
+		//String value = propertiesManager.getProperty("/redis-keys.properties", k);
+		if (true) {
 			return k;
 		}
 		throw new I18nMessageException(MsgModule.GLOBAL, 500, "‘" + k + "’在redis-keys.properties注册表中找不到！");

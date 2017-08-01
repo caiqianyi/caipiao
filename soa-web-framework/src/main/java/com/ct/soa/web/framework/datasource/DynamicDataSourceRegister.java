@@ -171,5 +171,9 @@ public class DynamicDataSourceRegister
             dataBinder(ds, env);
         }
     }
+    
+    public static void main(String[] args) throws Exception {
+		System.out.println(ConfigTools.decrypt("eFbXJ8YYyCvJ55H91mUCWwA5hdsnhF/2DIV5w5y1+cp08Nvn+Jq/BeyN3pYDJKRE4GUCKFSJKIBdVwzB+IYf1Q=="));
+	}
 
 }
