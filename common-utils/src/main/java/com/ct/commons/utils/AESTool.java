@@ -131,18 +131,4 @@ public class AESTool {
         return decrypted;
     }
 
-
-    public static void main(String[] args) throws Exception {
-        AESTool aesTool = new AESTool();
-        String key = "123456789012345678901234567890~!";
-        String xml = "<root><name>test</name><name>test</name><name>test</name><name>test</name><name>test</name><name>test</name><name>test</name><name>test</name><name>test</name><name>test</name><name>test</name><name>test</name><name>test</name><name>test</name><name>test</name><name>test</name><name>test</name></root>";
-        String encrypted = aesTool.encrypt(xml, key);
-        System.out.println("encrypted: \n" + encrypted);
-        System.out.println("encrypted length: \n" + encrypted.length());
-        String decrypted = aesTool.decrypt(encrypted, key);
-        System.out.println("decrypted: \n" + decrypted);
-        System.out.println("decrypted length: \n" + decrypted.length());
-        boolean isSuccessful = StringUtils.equals(decrypted, xml);
-        System.out.println(isSuccessful);
-    }
 }

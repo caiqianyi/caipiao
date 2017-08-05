@@ -3,11 +3,14 @@ package com.ct.soa.core.redis.impl;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.ct.commons.utils.SerializeUtil;
@@ -15,87 +18,26 @@ import com.ct.soa.core.redis.IRedisCache;
 import com.ct.soa.core.redis.RedisSpace;
 
 /**
- * IRedisCache实现
+ * IRedisCache瀹炵幇
  * 
  */
 @Repository("redisCache")
-public class RedisCacheImpl extends RedisCacheManager implements IRedisCache {
+public class RedisCacheImpl implements IRedisCache {
 
 	private Logger logger = LoggerFactory.getLogger(RedisCacheImpl.class);
-
-	/**
-	 * 
-	 * @param space
-	 *            见枚举类RedisSpace定义
-	 * @param key
-	 *            key值
-	 * @return
-	 */
-	private String getGlobalKey(RedisSpace space, String key) {
-		String k = space.getValue() + "." + key;
-		return checkKey(k);
-	}
+	
+	@Resource
+	private RedisTemplate<String,?> redisTemplate;
 
 	@Override
-	public String getGlobalUnsetKey(RedisSpace space, String key) {
-		return space.getValue() + ".unset." + key;
+	public boolean set(String key, final Object obj) {
+		return set(key, obj, null);
 	}
 
-	@Override
-	public boolean set(RedisSpace space, String key, final Object obj) {
-		return set(space, key, obj, null);
-	}
 
 	@Override
-	public boolean setUnset(RedisSpace space, String key1, String key2,
-			final Object obj, final Long expire) {
-		String k = checkKey(getGlobalUnsetKey(space, key1));
-		final String ks = k + "." + key2;
-
-		logger.debug("redis unset global set key:" + ks);
-		return redisTemplate.execute(new RedisCallback<Boolean>() {
-			public Boolean doInRedis(RedisConnection con)
-					throws DataAccessException {
-				byte[] k = redisTemplate.getStringSerializer().serialize(ks);
-				byte[] v = SerializeUtil.serialize(obj);
-
-				con.set(k, v);
-
-				if (expire != null && expire > 0) {
-					con.expire(k, expire);
-				}
-
-				return true;
-			}
-		}, true);
-	}
-
-	@Override
-	public boolean setUnset(RedisSpace space, final String key,
-			final Object obj, final Long expire) {
-		final String ks = getGlobalUnsetKey(space, key);
-		logger.debug("redis unset global set key:" + ks);
-		return redisTemplate.execute(new RedisCallback<Boolean>() {
-			public Boolean doInRedis(RedisConnection con)
-					throws DataAccessException {
-				byte[] k = redisTemplate.getStringSerializer().serialize(ks);
-				byte[] v = SerializeUtil.serialize(obj);
-
-				con.set(k, v);
-
-				if (expire != null && expire > 0) {
-					con.expire(k, expire);
-				}
-
-				return true;
-			}
-		}, true);
-	}
-
-	@Override
-	public boolean set(RedisSpace space, String key, final Object obj,
+	public boolean set(final String ks, final Object obj,
 			final Long expire) {
-		final String ks = getGlobalKey(space, key);
 
 		return redisTemplate.execute(new RedisCallback<Boolean>() {
 			public Boolean doInRedis(RedisConnection con)
@@ -115,40 +57,37 @@ public class RedisCacheImpl extends RedisCacheManager implements IRedisCache {
 	}
 
 	@Override
-	public boolean exists(RedisSpace space, String key) {
-		return redisTemplate.hasKey(getGlobalKey(space, key));
+	public boolean exists(String key) {
+		return redisTemplate.hasKey(key);
 	}
 
 	@Override
-	public void del(final RedisSpace space, final String... keys) {
+	public void del(final String... keys) {
 		if (keys != null && keys.length > 0) {
 			if (keys.length == 1)
 				redisTemplate.execute(new RedisCallback<Object>() {
 					public Object doInRedis(RedisConnection con)
 							throws DataAccessException {
 						con.del(redisTemplate.getStringSerializer().serialize(
-								getGlobalKey(space, keys[0])));
+								keys[0]));
 						return null;
 					}
 				});
-
 			else
 				for (String key : keys) {
-					del(space, key);
+					del(key);
 				}
 		}
 	}
 
 	@Override
-	public boolean update(RedisSpace space, String key, Object obj) {
-		return update(space, key, obj, null);
+	public boolean update(String key, Object obj) {
+		return update(key, obj, null);
 	}
 
 	@Override
-	public boolean update(RedisSpace space, String key, final Object obj,
+	public boolean update(final String ks, final Object obj,
 			final Long expire) {
-		final String ks = getGlobalKey(space, key);
-
 		return redisTemplate.execute(new RedisCallback<Boolean>() {
 			public Boolean doInRedis(RedisConnection con)
 					throws DataAccessException {
@@ -170,12 +109,6 @@ public class RedisCacheImpl extends RedisCacheManager implements IRedisCache {
 	}
 
 	@Override
-	public Object get(RedisSpace space, final String key) {
-		final String ks = getGlobalKey(space, key);
-		return get(ks);
-	}
-
-	@Override
 	public Object get(final String key) {
 		return redisTemplate.execute(new RedisCallback<Object>() {
 			public Object doInRedis(RedisConnection con)
@@ -191,9 +124,7 @@ public class RedisCacheImpl extends RedisCacheManager implements IRedisCache {
 	}
 
 	@Override
-	public Long ttl(RedisSpace space, String key) {
-		final String ks = getGlobalKey(space, key);
-
+	public Long ttl(final String ks) {
 		return redisTemplate.execute(new RedisCallback<Long>() {
 			public Long doInRedis(RedisConnection con)
 					throws DataAccessException {
@@ -204,9 +135,7 @@ public class RedisCacheImpl extends RedisCacheManager implements IRedisCache {
 	}
 
 	@Override
-	public Set<String> searchKey(final RedisSpace space, final String key) {
-
-		final String ks = space == null ? key : getGlobalKey(space, key);
+	public Set<String> searchKey(final String ks) {
 		final Set<String> result = new HashSet<String>();
 
 		redisTemplate.execute(new RedisCallback<Object>() {
@@ -224,8 +153,8 @@ public class RedisCacheImpl extends RedisCacheManager implements IRedisCache {
 	}
 
 	@Override
-	public void clear(RedisSpace space, final String key) {
-		Set<String> keys = searchKey(space, key);
+	public void clear(final String key) {
+		Set<String> keys = searchKey(key);
 
 		if (keys != null) {
 			for (final String k : keys) {
@@ -242,8 +171,8 @@ public class RedisCacheImpl extends RedisCacheManager implements IRedisCache {
 	}
 
 	@Override
-	public int size(RedisSpace space, String key) {
-		Set<String> keys = searchKey(space, key);
+	public int size(String key) {
+		Set<String> keys = searchKey(key);
 
 		if (keys != null) {
 			return keys.size();

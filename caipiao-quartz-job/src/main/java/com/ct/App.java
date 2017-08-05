@@ -1,6 +1,5 @@
 package com.ct;
 
-import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,8 +16,8 @@ import com.ct.soa.web.framework.datasource.DynamicDataSourceRegister;
 @ComponentScan
 @Import({DynamicDataSourceRegister.class}) //多数据源管理
 @SpringBootApplication
-@EnableRabbit
 public class App extends SpringBootServletInitializer{
+	
 	public static void main(String[] args) {
 		SpringApplication.run(App.class, args);
 	}

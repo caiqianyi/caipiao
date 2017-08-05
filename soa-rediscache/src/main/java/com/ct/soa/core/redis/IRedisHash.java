@@ -12,7 +12,7 @@ public interface IRedisHash{
 	 * @param v value值
 	 * @return
 	 */
-	public Boolean hSet(RedisSpace space,String k,String f,Object v);
+	public Boolean hSet(String k,String f,Object v);
 	
 	/**
 	 * 添加一个value到hash store中，如果field不存在。
@@ -23,7 +23,7 @@ public interface IRedisHash{
 	 * @param v value值
 	 * @return
 	 */
-	public Boolean hSetNx(RedisSpace space,String k,String f,Object v);
+	public Boolean hSetNx(String k,String f,Object v);
 	
 	/**
 	 * 取得hash中的value，如何hash不存在，或者key不存在返回null。
@@ -33,7 +33,7 @@ public interface IRedisHash{
 	 * @param f field值
 	 * @return
 	 */
-	public Object hGet(RedisSpace space,String k,String f);
+	public Object hGet(String k,String f);
 	/**
 	 * 取得hash表的长度。
 	 * @param space
@@ -41,7 +41,7 @@ public interface IRedisHash{
 	 * @param key
 	 * @return
 	 */
-	public Long hLen(RedisSpace space,String key);
+	public Long hLen(String key);
 	
 	/**
 	 * 删除指定的元素。
@@ -50,7 +50,7 @@ public interface IRedisHash{
 	 * @param key
 	 * @return
 	 */
-	public Long hDel(RedisSpace space,String key);
+	public Long hDel(String key);
 	
 	/**
 	 * 取得hash表中的keys，以Map<String,Object>形式返回。
@@ -59,7 +59,7 @@ public interface IRedisHash{
 	 * @param key
 	 * @return
 	 */
-	public Map<String,Object> hGetAll(RedisSpace space,String key);
+	public Map<String,Object> hGetAll(String key);
 	
 	/**
 	 * 验证hash表中是否存在指定的key-value
@@ -69,5 +69,5 @@ public interface IRedisHash{
 	 * @param f
 	 * @return
 	 */
-	public Boolean hExists(RedisSpace space,String k,String f);
+	public Boolean hExists(String k,String f);
 }

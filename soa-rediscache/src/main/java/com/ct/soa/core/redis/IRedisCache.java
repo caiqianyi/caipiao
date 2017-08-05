@@ -21,7 +21,7 @@ public interface IRedisCache {
 	 *            value值
 	 * @return
 	 */
-	public boolean set(RedisSpace space, String key, Object obj);
+	public boolean set(String key, Object obj);
 
 	/**
 	 * 
@@ -35,35 +35,8 @@ public interface IRedisCache {
 	 *            超时时间，单位 秒
 	 * @return
 	 */
-	public boolean set(RedisSpace space, String key, Object obj, Long expire);
+	public boolean set(String key, Object obj, Long expire);
 
-	/**
-	 * unset值设置
-	 * 
-	 * @param key1
-	 *            key1如mobile_
-	 * @param key2
-	 *            二级key值
-	 * @param obj
-	 *            值
-	 * @param expire
-	 *            超时时间，单位 秒
-	 * @return
-	 */
-	public boolean setUnset(RedisSpace space,String key1, String key2, Object obj, Long expire);
-
-	/**
-	 * 自定义的key
-	 * 
-	 * @param key
-	 *            自定义的任意key
-	 * @param obj
-	 *            值
-	 * @param expire
-	 *            超时时间
-	 * @return
-	 */
-	public boolean setUnset(RedisSpace space,String key, Object obj, Long expire);
 
 	/**
 	 * 删除指定命名空间下的key
@@ -73,7 +46,7 @@ public interface IRedisCache {
 	 * @param keys
 	 *            key值
 	 */
-	public void del(RedisSpace space, String... keys);
+	public void del(String... keys);
 
 	/**
 	 * 清空操作
@@ -83,7 +56,7 @@ public interface IRedisCache {
 	 * @param key
 	 *            通配 mobile_ 删除mobile_*所有的key；null值是删除 RedisSpace *
 	 */
-	public void clear(RedisSpace space, String key);
+	public void clear(String key);
 
 	/**
 	 * 判断key是否存在
@@ -94,7 +67,7 @@ public interface IRedisCache {
 	 *            key值
 	 * @return
 	 */
-	public boolean exists(RedisSpace space, String key);
+	public boolean exists(String key);
 
 	/**
 	 * 清空操作
@@ -104,7 +77,7 @@ public interface IRedisCache {
 	 * @param key
 	 *            通配 mobile_ 删除mobile_*所有的key；null值是删除 RedisSpace *
 	 */
-	public int size(RedisSpace space, String key);
+	public int size(String key);
 
 	/**
 	 * 更新
@@ -117,7 +90,7 @@ public interface IRedisCache {
 	 *            新值
 	 * @return
 	 */
-	public boolean update(RedisSpace space, String key, Object obj);
+	public boolean update(String key, Object obj);
 
 	/**
 	 * 更新
@@ -132,18 +105,8 @@ public interface IRedisCache {
 	 *            超时时间，单位 秒
 	 * @return
 	 */
-	public boolean update(RedisSpace space, String key, Object obj, Long expire);
+	public boolean update(String key, Object obj, Long expire);
 
-	/**
-	 * 获取key对应的值
-	 * 
-	 * @param space
-	 *            见枚举类RedisSpace定义
-	 * @param key
-	 * @return
-	 */
-	public Object get(RedisSpace space, String key);
-	
 	/**
 	 * 获取key对应的值
 	 * @param key
@@ -160,7 +123,7 @@ public interface IRedisCache {
 	 *            key值
 	 * @return
 	 */
-	public Long ttl(RedisSpace space, String key);
+	public Long ttl(String key);
 
 	/**
 	 * 获取指定key的集合
@@ -170,15 +133,6 @@ public interface IRedisCache {
 	 * @param key
 	 * @return
 	 */
-	public Set<String> searchKey(RedisSpace space, String key);
+	public Set<String> searchKey(String key);
 
-	/**
-	 * 获取unset key规则
-	 * @param space 	
-	 * 			   见枚举类RedisSpace定义
-	 * @param key
-	 * @return
-	 */
-	public String getGlobalUnsetKey(RedisSpace space, String key);
-	
 }

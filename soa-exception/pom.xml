@@ -3,14 +3,13 @@
   
   <parent>
   	<groupId>com.ct</groupId>
-  	<artifactId>soa-parent</artifactId>
-  	<version>2.0.0-SNAPSHOT</version>
+  	<artifactId>caipiao-app-base</artifactId>
+  	<version>1.0.0-RELEASE</version>
   </parent>
   
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>soa-exception</artifactId>
-  <version>1.1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>soa-exception</name>
@@ -27,8 +26,9 @@
     <dependency>
     	<groupId>com.ct</groupId>
     	<artifactId>common-utils</artifactId>
-    	<version>1.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
-  
+  <build>
+  	<finalName>soa-exception</finalName>
+  </build>
 </project>

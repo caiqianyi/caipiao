@@ -2,9 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   
   <parent>
-       <groupId>org.springframework.boot</groupId>
-       <artifactId>spring-boot-starter-parent</artifactId>
-       <version>1.5.0.RELEASE</version>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-parent</artifactId>
+      <version>Brixton.SR4</version>
+      <relativePath/>
   </parent>
   
   <modelVersion>4.0.0</modelVersion>
@@ -57,7 +58,10 @@
 	       <artifactId>tomcat-embed-jasper</artifactId>
 	       <scope>provided</scope>
 	  </dependency>
-
+	  <dependency>
+         <groupId>org.springframework.cloud</groupId>
+         <artifactId>spring-cloud-starter-eureka-server</artifactId>
+     </dependency>
   </dependencies>
   <build>
     <finalName>caipiao-config-server</finalName>
